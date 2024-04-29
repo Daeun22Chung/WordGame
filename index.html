@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="box.js"></script>
+  <script src="panel.js"></script>
+</head>
+<body>
+  <div id="title">영어단어 게임</div>
+
+  <canvas class="canvas" width="1200" height="800" style="background-color: gainsboro"></canvas>
+  <div id="photo"><div id="show"></div></div>
+  <button id="check">확인하기</button>
+  <button id="load">다시하기</button>
+  <div id="result"></div>
+
+<script>
+  var clickedName = [];
+  const canvas = document.querySelector(".canvas");
+  const context = canvas.getContext('2d');
+  const boxes = [];
+  const mousePos = {x: 0, y: 0};
+  var asc
+  let panel;
+  let selectedBox; // 클릭된 박스
+  let oX;
+  let oY;
+  let step; // 애플리케이션의 상태(단계)를 저장 1~4
+  let rqfid;
+  context.font = 'bold 30px sans-serif';
+
+
+
+
+  function render() {
+    context.clearRect(0,0,canvas.width, canvas.height)
+    let box;
+    for(let i = 0; i < boxes.length; i++) {
+      box = boxes[i];
+      // box.x += box.speed;
+      // if(box.x > canvas.width) {
+      //   box.x = -box.width;
+      //}
+      box.draw();
+    }
+    switch (step) {
+      case 1:
+        for(let i = 0; i < boxes.length; i++) {
+          box = boxes[i];
+          box.x += box.speed;
+          if(box.x > canvas.width) {
+            box.x = -box.width;
+          }
+        }
+        break;
+      case 2:
+        panel.draw();
+        break;
+    }
+
+    rqfid = requestAnimationFrame(render);
+    if(step === 2)
+    cancelAnimationFrame(rqfid);
+  }
+
+
+  let tempX, tempY, tempSpeed;
+  function init() {
+    step = 1;
+    oX = canvas.width / 2;
+    oY = canvas.height / 2;
+    for(let i = 97; i < 123; i++) {
+      asc = String.fromCharCode(i);
+      tempX = Math.random() * canvas.width * 0.8;
+      tempY = Math.random() * canvas.height * 0.8;
+      tempSpeed = Math.random() * 4 + 1;
+      boxes.push(new Box(asc, tempX, tempY, tempSpeed));
+    }
+
+    panel = new Panel();
+    render();
+
+  }
+
+  canvas.addEventListener('click', e => {
+    mousePos.x = e.offsetX;
+    mousePos.y = e.offsetY;
+
+    let box;
+    for(let i = 0; i < boxes.length; i++) {
+      box = boxes[i];
+      if (mousePos.x > box.x && mousePos.x < box.x + box.width &&
+          mousePos.y > box.y && mousePos.y < box.y + box.height) {
+        selectedBox = box;
+        if(name.includes(box.index)){
+          var newText = document.createTextNode(box.index)
+          document.getElementById('show').appendChild(newText);
+
+        }
+      }
+    }
+    if(step === 1 && selectedBox) {
+      // console.log(selectedBox.index);
+      step = 2;
+    } else if(step === 2) {
+      step = 1;
+      selectedBox = null;
+      render();
+    }
+  });
+
+
+  init();
+
+
+
+
+    // 캔버스 제외한 나머지 코드
+
+    var container;
+    var randomImageUrl
+    var img
+    var filename;
+    var name;
+
+    // 이미지 URL 배열
+    var imageUrls = [
+      "./images/banana.png",
+      "./images/grape.png",
+      "./images/apple.png",
+    ];
+
+    container = document.getElementById("photo");
+    // 이미지 랜덤 선택 (gpt가 알려줌)
+    randomImageUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+    // 이미지 요소 생성
+    img = document.createElement("img");
+    img.src = randomImageUrl; // 이미지의 src 속성 설정
+    container.appendChild(img); // 이미지를 요소에 추가
+    filename = randomImageUrl.substring(randomImageUrl.lastIndexOf('/') + 1);
+    name = filename.split('.').slice(0, -1).join('.');
+
+
+
+    document.getElementById('load').addEventListener('click', () => {
+      location.reload();
+    })
+
+
+    document.getElementById('check').addEventListener('click', () => {
+      var userInput = document.getElementById('show').innerHTML;
+      console.log(userInput);
+      if (userInput == name) {
+        document.getElementById('result').innerText="정답입니다!";
+        document.getElementById('show').innerText="";
+      } else {
+        document.getElementById('result').innerText="다시!";
+        document.getElementById('show').innerText="";
+      }
+    })
+
+
+
+  </script>
+</body>
+</html>

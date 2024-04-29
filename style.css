@@ -1,0 +1,27 @@
+#title {
+    font-size: 50px;
+    padding: 30px;
+}
+
+
+#photo {
+    display: inline-block;
+    width: 30vw;
+    vertical-align: top;
+
+}
+
+img {
+    width:100%
+}
+
+#show, #result{
+    font-size: 60px;
+    padding: 20px;
+}
+
+button {
+    padding: 20px;
+    border: 3px solid black;
+
+}
